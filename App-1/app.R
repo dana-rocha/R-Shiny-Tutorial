@@ -1,59 +1,55 @@
+####################################
+# Data Professor                   #
+# http://youtube.com/dataprofessor #
+# http://github.com/dataprofessor  #
+####################################
+
+# Modified from Winston Chang, 
+# https://shiny.rstudio.com/gallery/shiny-theme-selector.html
+
+# Concepts about Reactive programming used by Shiny, 
+# https://shiny.rstudio.com/articles/reactivity-overview.html
+
+# Load R packages
 library(shiny)
+library(shinythemes)
 
-# Define UI for app that draws a histogram ----
-ui <- fluidPage(
-  
-  # App title ----
-  titlePanel("Hello Shiny!"),
-  
-  # Sidebar layout with input and output definitions ----
-  sidebarLayout(
-    
-    # Sidebar panel for inputs ----
-    sidebarPanel(
-      
-      # Input: Slider for the number of bins ----
-      sliderInput(inputId = "bins",
-                  label = "Number of bins:",
-                  min = 1,
-                  max = 50,
-                  value = 30)
-      
-    ),
-    
-    # Main panel for displaying outputs ----
-    mainPanel(
-      
-      # Output: Histogram ----
-      plotOutput(outputId = "distPlot")
-      
-    )
-  )
-)
+# Define UI
+ui <- fluidPage(theme = shinytheme("cerulean"),
+                navbarPage(
+                  # theme = "cerulean",  # <--- To use a theme, uncomment this
+                  "My first app",
+                  tabPanel("Navbar 1",
+                           sidebarPanel(
+                             tags$h3("Input:"),
+                             textInput("txt1", "Given Name:", "John"), # txt1 will be sent to the server
+                             textInput("txt2", "Surname:", "Doe"), # txt2 will be sent to the server
+                             
+                           ), # sidebarPanel
+                           mainPanel(
+                             h1("Header 1"),
+                             
+                             h4("Output 1"),
+                             verbatimTextOutput("txtout"), # txtout is generated from the server
+                             
+                           ) # mainPanel
+                           
+                  ), # Navbar 1, tabPanel
+                  tabPanel("Navbar 2", "This panel is intentionally left blank"),
+                  tabPanel("Navbar 3", "This panel is intentionally left blank")
+                  
+                ) # navbarPage
+) # fluidPage
 
-# Define server logic required to draw a histogram ----
+
+# Define server function  
 server <- function(input, output) {
   
-  # Histogram of the Old Faithful Geyser Data ----
-  # with requested number of bins
-  # This expression that generates a histogram is wrapped in a call
-  # to renderPlot to indicate that:
-  #
-  # 1. It is "reactive" and therefore should be automatically
-  #    re-executed when inputs (input$bins) change
-  # 2. Its output type is a plot
-  output$distPlot <- renderPlot({
-    
-    x    <- faithful$waiting
-    bins <- seq(min(x), max(x), length.out = input$bins + 1)
-    
-    hist(x, breaks = bins, col = "#007bc2", border = "white",
-         xlab = "Waiting time to next eruption (in mins)",
-         main = "Histogram of waiting times")
-    
+  output$txtout <- renderText({
+    paste( input$txt1, input$txt2, sep = " " )
   })
-  
-}
+} # server
 
+
+# Create Shiny object
 shinyApp(ui = ui, server = server)
-runApp("App-1")
