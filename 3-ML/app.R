@@ -42,10 +42,10 @@ ui <- fluidPage(theme = shinytheme("united"),
                   selectInput("outlook", label = "Outlook:", 
                               choices = list("Sunny" = "sunny", "Overcast" = "overcast", "Rainy" = "rainy"), 
                               selected = "Rainy"),
-                  sliderInput("temperature", "Temperature:",
+                  sliderInput("temperature", label = "Temperature:",
                               min = 64, max = 86,
                               value = 70),
-                  sliderInput("humidity", "Humidity:",
+                  sliderInput("humidity", label = "Humidity:",
                               min = 65, max = 96,
                               value = 90),
                   selectInput("windy", label = "Windy:", 
@@ -87,8 +87,11 @@ server <- function(input, output, session) {
     play <- "play"
     df <- rbind(df, play)
     input <- transpose(df)
+    
+    # Writes the data to an 'input.csv' file
     write.table(input,"input.csv", sep=",", quote = FALSE, row.names = FALSE, col.names = FALSE)
     
+    # Reads the data back in
     test <- read.csv(paste("input", ".csv", sep=""), header = TRUE)
     
     test$outlook <- factor(test$outlook, levels = c("overcast", "rainy", "sunny"))
@@ -99,6 +102,7 @@ server <- function(input, output, session) {
     
   })
   
+  # Creates 2 outputs: output$contents and output$tabledata and the outputs are sent back to the UI component in the mainPanel
   # Status/Output Text Box
   output$contents <- renderPrint({
     if (input$submitbutton>0) { 
