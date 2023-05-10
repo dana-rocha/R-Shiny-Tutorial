@@ -14,9 +14,11 @@ library(randomForest)
 
 # Read data
 weather <- read.csv(text = getURL("https://raw.githubusercontent.com/dataprofessor/data/master/weather-weka.csv") )
+weather$play <- as.factor(weather$play)
+weather$outlook <- as.factor(weather$outlook)
 
 # Build model
-model <- randomForest(as.factor(as.character(play)) ~ ., data = weather, ntree = 500, mtry = 4, importance = TRUE)
+model <- randomForest(play ~ ., data = weather, ntree = 500, mtry = 4, importance = TRUE)
 
 # Save model to RDS file
 # saveRDS(model, "model.rds")
